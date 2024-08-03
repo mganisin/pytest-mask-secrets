@@ -1,6 +1,6 @@
 [project]
 name = "pytest-mask-secrets"
-version = "0.2.0"
+version = "0.3.0"
 description = "Pytest plugin to hide sensitive data in test reports"
 authors = [
     {name = "Marian Ganisin", email = "23635632+mganisin@users.noreply.github.com"},

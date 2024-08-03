@@ -23,6 +23,7 @@ def pytest_runtest_logreport(report):
     if len(secrets) == 0:
         return
 
+    secrets = [re.escape(i) for i in secrets]
     secrets = re.compile(f"({'|'.join(secrets)})")
     mask = "*****"
 
