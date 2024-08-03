@@ -12,6 +12,12 @@ case of leaking secrets is through generated JUnit files that are not curated
 by CI tools. Therefore, it is necessary to have such functionality at the
 pytest level.
 
+## Installation
+
+```
+pip install pytest-mask-secrets
+```
+
 ## Usage
 
 pytest-mask-secrets needs to know which values to mask. These values are read
