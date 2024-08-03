@@ -8,11 +8,18 @@ import pytest
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_logreport(report):
     """pytest hook to remove sensitive data aka secrets from report output."""
-    if "MASK_SECRETS" not in os.environ:
-        return
+    secrets = set()
 
-    secrets = os.environ["MASK_SECRETS"].split(",")
-    secrets = [os.environ[k] for k in secrets if k in os.environ]
+    if os.environ.get("MASK_SECRETS_AUTO", "") not in ("0", ""):
+        candidates = "(TOKEN|PASSWORD|PASSWD|SECRET)"
+        candidates = re.compile(candidates)
+        mine = re.compile(r"MASK_SECRETS(_AUTO)?\b")
+        secrets |= {os.environ[k] for k in os.environ if candidates.search(k) and not mine.match(k)}
+
+    if "MASK_SECRETS" in os.environ:
+        vars_ = os.environ["MASK_SECRETS"].split(",")
+        secrets |= {os.environ[k] for k in vars_ if k in os.environ}
+
     if len(secrets) == 0:
         return
 

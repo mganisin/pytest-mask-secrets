@@ -35,3 +35,17 @@ pytest
 
 With pytest-mask-secrets installed, all occurrences of "mytoken" and
 "mypassword" will be eliminated from the report.
+
+## Automagic Identification of Variables with Secrets
+
+If `MASK_SECRETS_AUTO` is set to anything other than zero ("0"), all
+environment variables containing the words "TOKEN", "SECRET," "PASSWORD," or
+"PASSWD" in their names are considered sensitive, and their values are removed
+from the report.
+
+This discovery mode should be used with caution. CI workflows, in particular,
+should rely on an explicit list of secret variables. Under certain
+circumstances, this method can lead to the leakage of other sensitive data (if,
+by accident, a secret from an environment variable matches text commonly
+present in the test report). Nevertheless, this method can still be useful for
+example for local execution to prevent accidental leaks through copy-and-paste.
