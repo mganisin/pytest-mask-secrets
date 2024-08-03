@@ -1,0 +1,26 @@
+[project]
+name = "pytest-mask-secrets"
+version = "0.1.0"
+description = "Pytest plugin to hide sensitive data from the report"
+authors = [
+    {name = "Marian Ganisin", email = "23635632+mganisin@users.noreply.github.com"},
+]
+dependencies = []
+requires-python = ">=3"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Framework :: Pytest",
+]
+
+[project.entry-points.pytest11]
+mask_secrets = "pytest_mask_secrets.plugin"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
