@@ -14,6 +14,9 @@ classifiers = [
     "Framework :: Pytest",
 ]
 
+[project.urls]
+Homepage = "https://github.com/mganisin/pytest-mask-secrets"
+
 [project.entry-points.pytest11]
 mask_secrets = "pytest_mask_secrets.plugin"
 
