@@ -1,5 +1,5 @@
 name: pypi-publish
-on: workflow-dispatch
+on: workflow_dispatch
 jobs:
   pypi-publish:
     name: upload release to PyPI
