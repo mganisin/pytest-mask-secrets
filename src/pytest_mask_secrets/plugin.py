@@ -28,7 +28,7 @@ def pytest_runtest_logreport(report):
     mask = "*****"
 
     report.sections = [(header, secrets.sub(mask, content)) for header, content in report.sections]
-    if report.longrepr:
+    if hasattr(report.longrepr, "chain"):
         for tracebacks, location, _ in report.longrepr.chain:
             for entry in tracebacks.reprentries:
                 entry.lines = [secrets.sub(mask, l) for l in entry.lines]
