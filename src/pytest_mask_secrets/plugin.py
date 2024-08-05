@@ -32,4 +32,6 @@ def pytest_runtest_logreport(report):
         for tracebacks, location, _ in report.longrepr.chain:
             for entry in tracebacks.reprentries:
                 entry.lines = [secrets.sub(mask, l) for l in entry.lines]
+                if hasattr(entry, "reprlocals"):
+                    entry.reprlocals.lines = [secrets.sub(mask, l) for l in entry.reprlocals.lines]
             location.message = secrets.sub(mask, location.message)
