@@ -36,6 +36,22 @@ pytest
 With pytest-mask-secrets installed, all occurrences of "mytoken" and
 "mypassword" will be eliminated from the report.
 
+### Define Secret Values in the Code
+
+Tests can use `config.stash` to define secret values to be masked. There is a
+`mask_secrets_key` available that provides access to a `set()` where additional
+secret values can be added. Here is an example:
+
+```
+from pytest_mask_secrets.plugin import mask_secrets_key
+
+def test(pytestconfig):
+    pytestconfig.stash[mask_secrets_key].add("true-secret")
+    ...
+```
+
+All occurrences of "true-secret" will be removed from the report.
+
 ## Automagic Identification of Variables with Secrets
 
 If `MASK_SECRETS_AUTO` is set to anything other than zero ("0"), all

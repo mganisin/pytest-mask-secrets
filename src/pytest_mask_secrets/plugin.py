@@ -5,6 +5,18 @@ import re
 import pytest
 
 
+mask_secrets_key = pytest.StashKey[set]()
+
+_stash = None
+
+
+def pytest_configure(config):
+    """pytest stash as global variable to gain access."""
+    global _stash
+    _stash = config.stash
+    _stash[mask_secrets_key] = set()
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_logreport(report):
     """pytest hook to remove sensitive data aka secrets from report output."""
@@ -20,6 +32,8 @@ def pytest_runtest_logreport(report):
         vars_ = os.environ["MASK_SECRETS"].split(",")
         secrets |= {os.environ[k] for k in vars_ if k in os.environ}
 
+    secrets |= _stash[mask_secrets_key]
+
     if len(secrets) == 0:
         return
 
@@ -32,6 +46,6 @@ def pytest_runtest_logreport(report):
         for tracebacks, location, _ in report.longrepr.chain:
             for entry in tracebacks.reprentries:
                 entry.lines = [secrets.sub(mask, l) for l in entry.lines]
-                if hasattr(entry, "reprlocals"):
+                if getattr(entry, "reprlocals") is not None:
                     entry.reprlocals.lines = [secrets.sub(mask, l) for l in entry.reprlocals.lines]
             location.message = secrets.sub(mask, location.message)
