@@ -48,5 +48,7 @@ def pytest_runtest_logreport(report):
                 entry.lines = [secrets.sub(mask, l) for l in entry.lines]
                 if getattr(entry, "reprlocals", None) is not None:
                     entry.reprlocals.lines = [secrets.sub(mask, l) for l in entry.reprlocals.lines]
+                if getattr(entry, "reprfuncargs", None) is not None:
+                    entry.reprfuncargs.args = [(k, secrets.sub(mask, v)) for k,v in entry.reprfuncargs.args]
             if hasattr(location, "message"):
                 location.message = secrets.sub(mask, location.message)
