@@ -30,7 +30,7 @@ def pytest_runtest_logreport(report):
 
     if "MASK_SECRETS" in os.environ:
         vars_ = os.environ["MASK_SECRETS"].split(",")
-        secrets |= {os.environ[k] for k in vars_ if k in os.environ}
+        secrets |= {os.environ[k] for k in vars_ if os.getenv(k)}
 
     secrets |= _stash[mask_secrets_key]
 
