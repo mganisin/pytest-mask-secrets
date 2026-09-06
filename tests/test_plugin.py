@@ -58,3 +58,34 @@ def test_masks_function_args_with_multiple_args(pytester: pytest.Pytester):
     assert "VISIBLE" in out
     assert "*****" in out
 
+
+def test_masks_logging_output(pytester: pytest.Pytester):
+    # Arrange: a passing test leaking a secret through a non-root logger, both inline and via args
+    pytester.makepyfile(
+        **{
+            "test_leak_log.py": (
+                "import logging\n"
+                "import os\n"
+                "os.environ['MASK_SECRETS'] = 'MY_SECRET'\n"
+                "os.environ['MY_SECRET'] = 'TOPSECRET'\n"
+                "log = logging.getLogger('some.child.logger')\n"
+                "def test_leak_log(caplog):\n"
+                "    log.warning('inline TOPSECRET and VISIBLE')\n"
+                "    log.warning('formatted %s and %s', 'TOPSECRET', 'VISIBLE')\n"
+                "    assert 'TOPSECRET' not in caplog.text\n"
+            )
+        }
+    )
+
+    # Act: run with live logging and a log file, the sinks the report hook cannot reach
+    log_file = pytester.path / "pytest.log"
+    result = pytester.runpytest("--log-cli-level=WARNING", f"--log-file={log_file}", "--log-file-level=WARNING")
+
+    # Assert: masked in caplog (the in-test assert), in live log output and in the log file
+    result.assert_outcomes(passed=1)
+
+    out = result.stdout.str() + result.stderr.str() + log_file.read_text()
+
+    assert "TOPSECRET" not in out
+    assert "VISIBLE" in out
+    assert "*****" in out

@@ -36,6 +36,10 @@ pytest
 With pytest-mask-secrets installed, all occurrences of "mytoken" and
 "mypassword" will be eliminated from the report.
 
+The same values are also masked in logging output, which covers live logging
+(`--log-cli-level`), log files (`--log-file`), `caplog` and any handler
+configured by the tests themselves.
+
 ### Define Secret Values in the Code
 
 Tests can use `config.stash` to define secret values to be masked. There is a
